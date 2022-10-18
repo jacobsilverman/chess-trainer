@@ -3,14 +3,13 @@ import '../index.css';
 import Board from './board.js';
 import FallenSoldierBlock from './fallen-soldier-block.js';
 import initialiseChessBoard from '../helpers/board-initialiser.js';
-import { makeMove } from '../helpers/utils.js';
-import { moves } from '../games/queens-gambit.js';
+import { makeMove, moves } from '../constants/queens-gambit.js';
 
 export default class TrainingGame extends React.Component {
-  constructor(props){
+  constructor(){
     super();
     this.state = {
-      squares: initialiseChessBoard(props.player),
+      squares: initialiseChessBoard(),
       whiteFallenSoldiers: [],
       blackFallenSoldiers: [],
       player: 1,
@@ -71,10 +70,24 @@ export default class TrainingGame extends React.Component {
 
           console.log('current move:',currentMove);
 
-          console.log("whiteFallenSoldiers", whiteFallenSoldiers);
+          console.log("whiteFallenSoldiers", whiteFallenSoldiers) ;
           console.log("blackFallenSoldiers", blackFallenSoldiers);
 
           squares = makeMove(squares, [this.state.sourceSelection, i]);
+
+          console.log("test: ", moves._search(currentMove));
+
+          if (!moves._search(currentMove)){
+            console.log('problem');
+          }
+
+          // squares = makeMove(squares, moves._search(currentMove).move);
+
+          // squares[moves.a.move[1]] = squares[moves.a.move[0]];
+          // squares[moves.a.move[0]] = null;
+
+          // let player = this.state.player === 1? 2: 1;
+          // let turn = this.state.turn === 'white'? 'black' : 'white';
 
           this.setState({
             sourceSelection: -1,
