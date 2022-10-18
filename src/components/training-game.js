@@ -3,7 +3,7 @@ import '../index.css';
 import Board from './board.js';
 import FallenSoldierBlock from './fallen-soldier-block.js';
 import initialiseChessBoard from '../helpers/board-initialiser.js';
-import { makeMove, moves } from '../constants/queens-gambit.js';
+import { makeMove, moves } from '../games/queens-gambit.js';
 
 export default class TrainingGame extends React.Component {
   constructor(){
