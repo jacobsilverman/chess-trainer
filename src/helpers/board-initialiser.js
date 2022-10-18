@@ -34,3 +34,4 @@ export default function initialiseChessBoard(){
   squares[60] = new King(1);
 
   return squares;
+}
