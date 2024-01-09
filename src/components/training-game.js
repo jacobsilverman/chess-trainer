@@ -3,11 +3,11 @@ import '../index.css';
 import Board from './board.js';
 import FallenSoldierBlock from './fallen-soldier-block.js';
 import initialiseChessBoard from '../helpers/board-initialiser.js';
-import { makeMove, moves } from '../games/queens-gambit.js';
+import { makeMove } from '../helpers/utils.js';
 
 export default class TrainingGame extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
       squares: initialiseChessBoard(),
       whiteFallenSoldiers: [],
@@ -17,14 +17,15 @@ export default class TrainingGame extends React.Component {
       status: '',
       turn: 'white',
       turns: 0,
-      prevMove: ''
+      prevMove: '',
+      moves: props.moves
     }
   }
  
   handleClick(i){
     let squares = this.state.squares.slice();
     const currentMove = this.state.turns + ':' + this.state.sourceSelection + ',' + i;
-    
+
     if(this.state.sourceSelection === -1){
       if(!squares[i] || squares[i].player !== this.state.player){
         this.setState({status: "Wrong selection. Choose player " + this.state.player + " pieces."});
@@ -42,14 +43,13 @@ export default class TrainingGame extends React.Component {
     }
     else if(this.state.sourceSelection > -1){ 
       squares[this.state.sourceSelection].style = {...squares[this.state.sourceSelection].style, backgroundColor: null};
-      if((squares[i] && squares[i].player === this.state.player) || !moves._search(currentMove)){
+      if((squares[i] && squares[i].player === this.state.player) || !this.state.moves._search(currentMove)){
         this.setState({
           status: "Wrong selection. Choose valid source and destination again.",
           sourceSelection: -1,
         });
       }
       else{
-        
         let squares = this.state.squares.slice();
         const whiteFallenSoldiers = this.state.whiteFallenSoldiers.slice();
         const blackFallenSoldiers = this.state.blackFallenSoldiers.slice();
@@ -69,23 +69,16 @@ export default class TrainingGame extends React.Component {
           }
 
           console.log('current move:',currentMove);
-
           console.log("whiteFallenSoldiers", whiteFallenSoldiers) ;
           console.log("blackFallenSoldiers", blackFallenSoldiers);
-
           squares = makeMove(squares, [this.state.sourceSelection, i]);
 
-          console.log("test: ", moves._search(currentMove));
-
-          if (!moves._search(currentMove)){
+          if (!this.state.moves._search(currentMove)){
             console.log('problem');
           }
-
           // squares = makeMove(squares, moves._search(currentMove).move);
-
           // squares[moves.a.move[1]] = squares[moves.a.move[0]];
           // squares[moves.a.move[0]] = null;
-
           // let player = this.state.player === 1? 2: 1;
           // let turn = this.state.turn === 'white'? 'black' : 'white';
 
@@ -97,18 +90,20 @@ export default class TrainingGame extends React.Component {
             player: 1,
             status: '',
             turn: 'white',
-            turns: this.state.turns+1
+            turns: this.state.turns+1,
+            moves: this.state.moves
           });
 
           setTimeout(function() {
-
+            console.log('prevMove: ', this.state.prevMove);
             this.setState({
-              squares: makeMove(squares, moves._search(currentMove).children[0].move),
+              squares: makeMove(squares, this.state.moves._search(currentMove).children[0].move),
               prevMove: currentMove,
               turns: this.state.turns+1
             })
-            console.log('prevMove: ', this.state.prevMove);
-          }.bind(this), 1000)
+            console.log('curvMove: ', this.state.moves._search(currentMove).children[0].move);
+            
+          }.bind(this), 500)
         }
         else{
           this.setState({
@@ -118,7 +113,6 @@ export default class TrainingGame extends React.Component {
         }
       }
     }
-
   }
 
   /**
@@ -137,7 +131,6 @@ export default class TrainingGame extends React.Component {
   }
 
   render() {
-
     return (
       <div>
         <div className="game">
@@ -148,21 +141,17 @@ export default class TrainingGame extends React.Component {
             />
           </div>
           <div className="game-info">
-            <h3>Turn</h3>
+            <h3>Turn: {this.state.turns}</h3>
             <div id="player-turn-box" style={{backgroundColor: this.state.turn}}>
-  
             </div>
             <div className="game-status">{this.state.status}</div>
-
             <div className="fallen-soldier-block">
-              
               {<FallenSoldierBlock
               whiteFallenSoldiers = {this.state.whiteFallenSoldiers}
               blackFallenSoldiers = {this.state.blackFallenSoldiers}
               />
             }
             </div>
-            
           </div>
         </div>
 
@@ -170,8 +159,6 @@ export default class TrainingGame extends React.Component {
           <div> <small> Chess Icons And Favicon (extracted) By en:User:Cburnett [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a>, <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a>, <a href="http://opensource.org/licenses/bsd-license.php">BSD</a> or <a href="http://www.gnu.org/licenses/gpl.html">GPL</a>], <a href="https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces">via Wikimedia Commons</a> </small></div>
         </div>
       </div>
-
-     
-      );
+    );
   }
 }
