@@ -7,7 +7,7 @@ import { makeMove } from '../helpers/utils.js';
 
 export default class TrainingGame extends React.Component {
   constructor(props){
-    super(props);
+    super();
     this.state = {
       squares: initialiseChessBoard(),
       whiteFallenSoldiers: [],
